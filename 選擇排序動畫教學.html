@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇排序法 - 互動動畫教學</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #f5576c;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #f093fb;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .visualization-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .bars-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            height: 400px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .bar {
+            width: 40px;
+            background: linear-gradient(180deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding-bottom: 5px;
+        }
+
+        .bar.comparing {
+            background: linear-gradient(180deg, #ff6b6b 0%, #ee5a6f 100%);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
+        }
+
+        .bar.selecting {
+            background: linear-gradient(180deg, #ffa94d 0%, #fd7e14 100%);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(255, 165, 77, 0.4);
+        }
+
+        .bar.sorted {
+            background: linear-gradient(180deg, #51cf66 0%, #37b24d 100%);
+            animation: pulse 0.5s ease;
+        }
+
+        .bar.default {
+            background: linear-gradient(180deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #dee2e6;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls-group input[type="range"],
+        .controls-group input[type="number"] {
+            cursor: pointer;
+        }
+
+        .controls-group input[type="range"] {
+            width: 150px;
+        }
+
+        .controls-group input[type="number"] {
+            width: 60px;
+            padding: 6px;
+            font-size: 1em;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        .info-panel {
+            background: #fff3e0;
+            border-left: 4px solid #f5576c;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-panel h4 {
+            color: #f5576c;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #f093fb;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .code-block code {
+            font-size: 0.95em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #f5576c;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .step-description {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #f5576c;
+        }
+
+        .step-description strong {
+            color: #f5576c;
+        }
+
+        .complexity-table {
+            width: 100%;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .bars-container {
+                height: 300px;
+            }
+
+            .bar {
+                width: 30px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        .tab-container {
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #f5576c;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            border-bottom-color: #f5576c;
+            color: #f5576c;
+        }
+
+        .tab:hover {
+            color: #f093fb;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .algorithm-step {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #f5576c;
+        }
+
+        .algorithm-step strong {
+            color: #f5576c;
+        }
+
+        .nav-bar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-bar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-bar .home-link {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-bar .other-algo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-left: auto;
+        }
+
+        .nav-title {
+            color: white;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 選擇排序法</h1>
+            <p>互動動畫教學 - 快速理解排序演演算法</p>
+        </header>
+
+        <div class="nav-bar">
+            <div>
+                <a href="index.html" class="home-link">🏠 返回首頁</a>
+            </div>
+            <span class="nav-title">或選擇其他演算法 →</span>
+            <a href="氣泡排序動畫教學.html" class="other-algo">🫧 氣泡排序</a>
+        </div>
+
+        <div class="content">
+            <!-- 簡介部分 -->
+            <div class="section">
+                <h2>📚 介紹</h2>
+                <p style="font-size: 1.1em; line-height: 1.8; color: #555;">
+                    選擇排序法是一種簡單直觀的排序演演算法。它通過每次從未排序的部分選擇最小元素，
+                    然後將其放在已排序部分的末尾。雖然時間複雜度為 O(n²)，但由於其簡單性和穩定性，
+                    在教學和小規模數據排序中仍然很有用。
+                </p>
+            </div>
+
+            <!-- 互動演示部分 -->
+            <div class="section">
+                <h2>🎬 互動演示</h2>
+
+                <div class="visualization-area">
+                    <div class="step-description">
+                        當前狀態：<strong id="currentStep">準備就緒</strong>
+                    </div>
+
+                    <div class="bars-container" id="barsContainer"></div>
+
+                    <div class="controls">
+                        <button class="btn-primary" id="generateBtn" onclick="generateArray()">生成新列表</button>
+                        <button class="btn-primary" id="startBtn" onclick="startSort()">開始排序</button>
+                        <button class="btn-secondary" id="resetBtn" onclick="resetSort()" disabled>重置</button>
+                        <button class="btn-secondary" id="pauseBtn" onclick="togglePause()" disabled>暫停</button>
+                    </div>
+
+                    <div class="controls-group">
+                        <label for="sizeInput">元素個數:</label>
+                        <input type="number" id="sizeInput" min="5" max="50" value="15" 
+                               onchange="updateSizeFromInput(this.value); generateArray()">
+                        <span id="sizeValue">15</span>
+                    </div>
+
+                    <div class="controls-group">
+                        <label for="sizeSlider">使用滑塊設定大小:</label>
+                        <input type="range" id="sizeSlider" min="5" max="50" value="15" 
+                               oninput="updateSize(this.value); document.getElementById('sizeInput').value = this.value;" onchange="generateArray()">
+                    </div>
+
+                    <div class="controls-group">
+                        <label for="speedSlider">排序速度:</label>
+                        <input type="range" id="speedSlider" min="10" max="1000" value="500" 
+                               oninput="updateSpeed(this.value)">
+                        <span id="speedValue">中速</span>
+                    </div>
+
+                    <div class="stats" style="margin-top: 30px;">
+                        <div class="stat-box">
+                            <h4>比較次數</h4>
+                            <div class="stat-value" id="comparisons">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>交換次數</h4>
+                            <div class="stat-value" id="swaps">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>已排序</h4>
+                            <div class="stat-value" id="sorted">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>排序進度</h4>
+                            <div class="stat-value" id="progress">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 基本原理 -->
+            <div class="section">
+                <h2>🔍 基本原理</h2>
+
+                <div class="explanation">
+                    <h4>✨ 核心思想</h4>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>將列表分為已排序和未排序兩部分</li>
+                        <li>在未排序部分中查找最小元素</li>
+                        <li>將最小元素與未排序部分的第一個元素交換</li>
+                        <li>已排序部分向右擴展一位</li>
+                        <li>重複上述過程，直到整個列表排序完成</li>
+                    </ol>
+                </div>
+
+                <h3>視覺化示例</h3>
+                <div class="code-block">
+<code>初始列表：[5, 3, 8, 4, 2]
+
+第一輪：尋找最小值 2
+[5, 3, 8, 4, 2] → [2, 3, 8, 4, 5]  (交換 5 和 2) ✓
+
+第二輪：在 [3, 8, 4, 5] 中尋找最小值 3
+[2, 3, 8, 4, 5] → [2, 3, 8, 4, 5]  (3 已在正確位置) ✓
+
+第三輪：在 [8, 4, 5] 中尋找最小值 4
+[2, 3, 8, 4, 5] → [2, 3, 4, 8, 5]  (交換 8 和 4) ✓
+
+第四輪：在 [8, 5] 中尋找最小值 5
+[2, 3, 4, 8, 5] → [2, 3, 4, 5, 8]  (交換 8 和 5) ✓
+
+最終排序結果：[2, 3, 4, 5, 8]</code>
+                </div>
+            </div>
+
+            <!-- 演演算法詳解 -->
+            <div class="section">
+                <h2>📖 演演算法詳解</h2>
+
+                <h3>偽代碼</h3>
+                <div class="code-block">
+<code>procedure selectionSort(A : list)
+    n := length(A)
+    for i := 0 to n-2 do
+        minIndex := i
+        for j := i+1 to n-1 do
+            if A[j] < A[minIndex] then
+                minIndex := j
+            end if
+        end for
+        if minIndex ≠ i then
+            swap(A[i], A[minIndex])
+        end if
+    end for
+end procedure</code>
+                </div>
+
+                <h3>逐步執行</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <div class="algorithm-step">
+                        <strong>1. 初始化：</strong> 設定外層迴圈，從 i=0 到 n-2
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>2. 尋找最小值：</strong> 設定 minIndex=i，準備查找最小元素
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>3. 搜尋最小：</strong> 內層迴圈從 j=i+1 開始，比較 A[j] 與 A[minIndex]
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>4. 更新最小值索引：</strong> 若 A[j] < A[minIndex]，更新 minIndex
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>5. 交換元素：</strong> 若 minIndex ≠ i，交換 A[i] 和 A[minIndex]
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>6. 擴展排序部分：</strong> 外層迴圈繼續，已排序部分向右擴展
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>7. 終止：</strong> 外層迴圈完成，列表排序完成
+                    </div>
+                </div>
+            </div>
+
+            <!-- 複雜度分析 -->
+            <div class="section">
+                <h2>📊 複雜度分析</h2>
+
+                <h3>時間複雜度</h3>
+                <table class="complexity-table">
+                    <tr>
+                        <th>情況</th>
+                        <th>複雜度</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><strong>最好情況</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>即使列表已排序，仍需進行 n(n-1)/2 次比較</td>
+                    </tr>
+                    <tr>
+                        <td><strong>平均情況</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>列表隨機排列</td>
+                    </tr>
+                    <tr>
+                        <td><strong>最壞情況</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>列表逆序排列</td>
+                    </tr>
+                </table>
+
+                <h3>空間複雜度</h3>
+                <table class="complexity-table">
+                    <tr>
+                        <th>指標</th>
+                        <th>複雜度</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><strong>空間複雜度</strong></td>
+                        <td><strong>O(1)</strong></td>
+                        <td>只使用常數個變數，原地排序</td>
+                    </tr>
+                </table>
+
+                <h3>比較次數</h3>
+                <p style="margin-top: 15px;">
+                    對於長度為 n 的列表，總比較次數固定為：
+                </p>
+                <div class="code-block">
+<code>(n-1) + (n-2) + ... + 1 = n(n-1)/2 ≈ O(n²)</code>
+                </div>
+            </div>
+
+            <!-- 代碼實現 -->
+            <div class="section">
+                <h2>💻 代碼實現</h2>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab(event, 'python')">Python</button>
+                        <button class="tab" onclick="switchTab(event, 'javascript')">JavaScript</button>
+                        <button class="tab" onclick="switchTab(event, 'java')">Java</button>
+                    </div>
+
+                    <div id="python" class="tab-content active">
+                        <h3>基礎版本</h3>
+                        <div class="code-block">
+<code>def selection_sort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        min_index = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        if min_index != i:
+            arr[i], arr[min_index] = arr[min_index], arr[i]
+    return arr
+</code>
+                        </div>
+
+                        <h3>帶統計功能的版本</h3>
+                        <div class="code-block">
+<code>def selection_sort_with_stats(arr):
+    n = len(arr)
+    comparisons = 0
+    swaps = 0
+    
+    for i in range(n - 1):
+        min_index = i
+        for j in range(i + 1, n):
+            comparisons += 1
+            if arr[j] < arr[min_index]:
+                min_index = j
+        if min_index != i:
+            arr[i], arr[min_index] = arr[min_index], arr[i]
+            swaps += 1
+    
+    return arr, comparisons, swaps
+</code>
+                        </div>
+                    </div>
+
+                    <div id="javascript" class="tab-content">
+                        <h3>基礎版本</h3>
+                        <div class="code-block">
+<code>function selectionSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
+    }
+    return arr;
+}
+</code>
+                        </div>
+
+                        <h3>帶統計功能的版本</h3>
+                        <div class="code-block">
+<code>function selectionSortWithStats(arr) {
+    const n = arr.length;
+    let comparisons = 0;
+    let swaps = 0;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            comparisons++;
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+            swaps++;
+        }
+    }
+    
+    return { array: arr, comparisons, swaps };
+}
+</code>
+                        </div>
+                    </div>
+
+                    <div id="java" class="tab-content">
+                        <h3>基礎版本</h3>
+                        <div class="code-block">
+<code>public class SelectionSort {
+    public static void selectionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            if (minIndex != i) {
+                int temp = arr[i];
+                arr[i] = arr[minIndex];
+                arr[minIndex] = temp;
+            }
+        }
+    }
+}
+</code>
+                        </div>
+
+                        <h3>帶統計功能的版本</h3>
+                        <div class="code-block">
+<code>public static void selectionSortWithStats(int[] arr) {
+    int n = arr.length;
+    int comparisons = 0;
+    int swaps = 0;
+    
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++) {
+            comparisons++;
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex != i) {
+            int temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+            swaps++;
+        }
+    }
+    
+    System.out.println("比較次數: " + comparisons);
+    System.out.println("交換次數: " + swaps);
+}
+</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 優缺點 -->
+            <div class="section">
+                <h2>⚖️ 優缺點</h2>
+
+                <h3>✅ 優點</h3>
+                <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>易於理解：</strong> 邏輯直觀簡單，易於初學者理解和實現</li>
+                        <li><strong>原地排序：</strong> 不需要額外的存儲空間，空間複雜度為 O(1)</li>
+                        <li><strong>交換次數少：</strong> 最多只進行 n-1 次交換，優於氣泡排序</li>
+                        <li><strong>性能穩定：</strong> 無論數據如何排列，比較次數都是 O(n²)</li>
+                        <li><strong>實用性：</strong> 對於小規模數據排序非常有效</li>
+                    </ul>
+                </div>
+
+                <h3>❌ 缺點</h3>
+                <div style="background: #f8d7da; padding: 20px; border-radius: 8px;">
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>時間複雜度高：</strong> O(n²) 複雜度，對大型數據集效率低下</li>
+                        <li><strong>不穩定排序：</strong> 交換操作可能改變相等元素的相對順序</li>
+                        <li><strong>無優化空間：</strong> 無法根據數據特性進行優化（如已排序數據）</li>
+                        <li><strong>有更優方案：</strong> 快速排序、歸併排序等提供更好的性能</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 與其他算法的比較 -->
+            <div class="section">
+                <h2>🔄 與其他排序算法的比較</h2>
+                <table class="complexity-table">
+                    <tr>
+                        <th>算法</th>
+                        <th>最好情況</th>
+                        <th>平均情況</th>
+                        <th>最壞情況</th>
+                        <th>空間</th>
+                        <th>穩定性</th>
+                    </tr>
+                    <tr>
+                        <td><strong>選擇排序</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>O(1)</td>
+                        <td>❌ 不穩定</td>
+                    </tr>
+                    <tr>
+                        <td>氣泡排序</td>
+                        <td>O(n)</td>
+                        <td>O(n²)</td>
+                        <td>O(n²)</td>
+                        <td>O(1)</td>
+                        <td>✅ 穩定</td>
+                    </tr>
+                    <tr>
+                        <td>快速排序</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n²)</td>
+                        <td>O(log n)</td>
+                        <td>❌ 不穩定</td>
+                    </tr>
+                    <tr>
+                        <td>歸併排序</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n)</td>
+                        <td>✅ 穩定</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 實踐示例 -->
+            <div class="section">
+                <h2>📝 實踐示例</h2>
+
+                <h3>例子 1：排序學生成績（從低到高）</h3>
+                <div class="code-block">
+<code>students = [
+    {'name': '張三', 'score': 85},
+    {'name': '李四', 'score': 92},
+    {'name': '王五', 'score': 78}
+]
+
+def sort_students_by_score(students):
+    n = len(students)
+    for i in range(n - 1):
+        min_index = i
+        for j in range(i + 1, n):
+            if students[j]['score'] < students[min_index]['score']:
+                min_index = j
+        if min_index != i:
+            students[i], students[min_index] = students[min_index], students[i]
+    return students
+
+sorted_students = sort_students_by_score(students)
+for student in sorted_students:
+    print(f"{student['name']}: {student['score']}")
+
+# 輸出結果：
+# 王五: 78
+# 張三: 85
+# 李四: 92
+</code>
+                </div>
+
+                <h3>例子 2：找出前 10 個最小的數字</h3>
+                <div class="code-block">
+<code>def get_smallest_k(arr, k):
+    """只排序前k個最小的數"""
+    n = len(arr)
+    for i in range(min(k, n)):
+        min_index = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        if min_index != i:
+            arr[i], arr[min_index] = arr[min_index], arr[i]
+    return arr[:k]
+
+data = [95, 23, 15, 47, 38, 5, 62, 81, 33, 12, 77, 42]
+smallest_10 = get_smallest_k(data.copy(), 10)
+print(smallest_10)
+</code>
+                </div>
+            </div>
+
+            <!-- 學習檢查清單 -->
+            <div class="section">
+                <h2>✓ 學習檢查清單</h2>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>☐ 理解選擇排序的基本原理和概念</li>
+                        <li>☐ 能夠手工執行小列表的選擇排序過程</li>
+                        <li>☐ 理解選擇排序的時間和空間複雜度</li>
+                        <li>☐ 能用至少一種語言實現選擇排序</li>
+                        <li>☐ 理解選擇排序為什麼是不穩定的</li>
+                        <li>☐ 比較選擇排序與氣泡排序的異同</li>
+                        <li>☐ 識別選擇排序的適用場景</li>
+                        <li>☐ 能夠優化選擇排序的實現（如統計操作次數）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 關鍵概念 -->
+            <div class="section">
+                <h2>🎓 關鍵概念</h2>
+                
+                <h3>為什麼選擇排序不穩定？</h3>
+                <div class="explanation">
+                    <p style="line-height: 1.8;">
+                        考慮這個例子：<code style="background: #f5f5f5; padding: 2px 5px; border-radius: 3px;">[(5, A), (3, B), (5, C), (1, D)]</code><br>
+                        第一輪：尋找最小值 (1, D)，交換到第 0 位<br>
+                        結果：<code style="background: #f5f5f5; padding: 2px 5px; border-radius: 3px;">[(1, D), (3, B), (5, C), (5, A)]</code><br>
+                        <br>
+                        在這個過程中，兩個值為 5 的元素的相對順序發生了改變：
+                        原本 (5, A) 在 (5, C) 前面，現在 (5, C) 在 (5, A) 前面。
+                    </p>
+                </div>
+
+                <h3>比較 vs 交換</h3>
+                <table class="complexity-table">
+                    <tr>
+                        <th>指標</th>
+                        <th>選擇排序</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><strong>比較次數</strong></td>
+                        <td><strong>n(n-1)/2</strong></td>
+                        <td>總是固定的，無法優化</td>
+                    </tr>
+                    <tr>
+                        <td><strong>交換次數</strong></td>
+                        <td>最多 n-1</td>
+                        <td>遠少於氣泡排序，最多只交換 n-1 次</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p>🎓 選擇排序法互動教學 | 最後更新：2026年3月16日</p>
+        </footer>
+    </div>
+
+    <script>
+        // 全局變數
+        let array = [];
+        let isSorting = false;
+        let isPaused = false;
+        let arraySize = 15;
+        let speed = 500;
+        let comparisons = 0;
+        let swaps = 0;
+
+        // 初始化
+        function init() {
+            generateArray();
+        }
+
+        // 生成隨機列表
+        function generateArray() {
+            array = [];
+            for (let i = 0; i < arraySize; i++) {
+                array.push(Math.floor(Math.random() * (400 - 20)) + 20);
+            }
+            drawBars();
+            resetStats();
+        }
+
+        // 繪製柱狀圖
+        function drawBars(comparingIndex = -1, selectingIndex = -1, sortedIndex = -1) {
+            const container = document.getElementById('barsContainer');
+            container.innerHTML = '';
+
+            const maxValue = Math.max(...array);
+            
+            array.forEach((value, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+
+                if (index <= sortedIndex) {
+                    bar.classList.add('sorted');
+                } else if (index === selectingIndex) {
+                    bar.classList.add('selecting');
+                } else if (index === comparingIndex || index === comparingIndex + 1) {
+                    bar.classList.add('comparing');
+                } else {
+                    bar.classList.add('default');
+                }
+
+                bar.style.height = (value / maxValue) * 350 + 'px';
+                bar.textContent = value;
+                container.appendChild(bar);
+            });
+        }
+
+        // 選擇排序函數
+        async function selectionSort() {
+            const n = array.length;
+            let totalComparisons = 0;
+            let totalSwaps = 0;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+
+                document.getElementById('currentStep').textContent = 
+                    `第 ${i + 1} 輪：尋找最小元素`;
+
+                // 尋找最小元素
+                for (let j = i + 1; j < n; j++) {
+                    if (isPaused) {
+                        await new Promise(resolve => {
+                            const checkPause = setInterval(() => {
+                                if (!isPaused) {
+                                    clearInterval(checkPause);
+                                    resolve();
+                                }
+                            }, 100);
+                        });
+                    }
+
+                    totalComparisons++;
+                    document.getElementById('comparisons').textContent = totalComparisons;
+
+                    // 比較 array[j] 與 array[minIndex]
+                    if (array[j] < array[minIndex]) {
+                        minIndex = j;
+                    }
+
+                    drawBars(j, minIndex, i - 1);
+                    document.getElementById('currentStep').textContent = 
+                        `第 ${i + 1} 輪：比較第 ${j + 1} 個元素，當前最小位置：${minIndex + 1}`;
+
+                    await sleep(1100 - speed);
+                }
+
+                // 交換最小元素到正確位置
+                if (minIndex !== i) {
+                    [array[i], array[minIndex]] = [array[minIndex], array[i]];
+                    totalSwaps++;
+                    document.getElementById('swaps').textContent = totalSwaps;
+                    document.getElementById('currentStep').textContent = 
+                        `第 ${i + 1} 輪：交換位置 ${i + 1} 和 ${minIndex + 1}`;
+
+                    await sleep(1100 - speed);
+                }
+
+                document.getElementById('sorted').textContent = i + 1;
+                const progress = Math.round(((i + 1) / (n - 1)) * 100);
+                document.getElementById('progress').textContent = progress + '%';
+
+                drawBars(-1, -1, i);
+            }
+
+            // 完成排序
+            document.getElementById('sorted').textContent = n - 1;
+            document.getElementById('progress').textContent = '100%';
+            drawBars(-1, -1, n - 1);
+            document.getElementById('currentStep').textContent = '✅ 排序完成！';
+        }
+
+        // 延遲函數
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // 開始排序
+        async function startSort() {
+            if (isSorting) return;
+            
+            isSorting = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('sizeSlider').disabled = true;
+            document.getElementById('sizeInput').disabled = true;
+            document.getElementById('resetBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('pauseBtn').textContent = '暫停';
+            isPaused = false;
+
+            await selectionSort();
+
+            isSorting = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('sizeSlider').disabled = false;
+            document.getElementById('sizeInput').disabled = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = true;
+        }
+
+        // 重置排序
+        function resetSort() {
+            if (isSorting) {
+                isSorting = false;
+                isPaused = false;
+            }
+            generateArray();
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('sizeSlider').disabled = false;
+            document.getElementById('sizeInput').disabled = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('currentStep').textContent = '準備就緒';
+        }
+
+        // 切換暫停
+        function togglePause() {
+            if (!isSorting) return;
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? '繼續' : '暫停';
+        }
+
+        // 通過輸入框更新大小
+        function updateSizeFromInput(value) {
+            arraySize = parseInt(value);
+            document.getElementById('sizeSlider').value = value;
+            document.getElementById('sizeValue').textContent = value;
+        }
+
+        // 通過滑塊更新大小
+        function updateSize(value) {
+            arraySize = parseInt(value);
+            document.getElementById('sizeValue').textContent = value;
+        }
+
+        // 更新速度
+        function updateSpeed(value) {
+            speed = parseInt(value);
+            const speedText = value < 300 ? '快速' : value < 700 ? '中速' : '慢速';
+            document.getElementById('speedValue').textContent = speedText;
+        }
+
+        // 重置統計數據
+        function resetStats() {
+            comparisons = 0;
+            swaps = 0;
+            document.getElementById('comparisons').textContent = '0';
+            document.getElementById('swaps').textContent = '0';
+            document.getElementById('sorted').textContent = '0';
+            document.getElementById('progress').textContent = '0%';
+        }
+
+        // 切換標籤頁
+        function switchTab(event, tabName) {
+            // 隱藏所有標籤內容
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 移除所有標籤的 active 類
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 顯示點擊的標籤內容
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 頁面加載時初始化
+        window.onload = init;
+    </script>
+</body>
+</html>
