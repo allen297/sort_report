@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插入排序法 - 互動動畫教學</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #10b981;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #10b981;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #059669;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .visualization-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .bars-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            height: 400px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .bar {
+            width: 40px;
+            background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding-bottom: 5px;
+        }
+
+        .bar.comparing {
+            background: linear-gradient(180deg, #ff6b6b 0%, #ee5a6f 100%);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
+        }
+
+        .bar.inserting {
+            background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .bar.sorted {
+            background: linear-gradient(180deg, #51cf66 0%, #37b24d 100%);
+            animation: pulse 0.5s ease;
+        }
+
+        .bar.default {
+            background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #dee2e6;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controls-group input[type="range"] {
+            width: 150px;
+            cursor: pointer;
+        }
+
+        .info-panel {
+            background: #e0f2fe;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-panel h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #059669;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .explanation h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .code-block code {
+            font-size: 0.95em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .step-description {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #10b981;
+        }
+
+        .step-description strong {
+            color: #10b981;
+        }
+
+        .complexity-table {
+            width: 100%;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .bars-container {
+                height: 300px;
+            }
+
+            .bar {
+                width: 30px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        .tab-container {
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #10b981;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            border-bottom-color: #10b981;
+            color: #10b981;
+        }
+
+        .tab:hover {
+            color: #059669;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .algorithm-step {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #10b981;
+        }
+
+        .algorithm-step strong {
+            color: #10b981;
+        }
+
+        .nav-bar {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-bar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-bar .home-link {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-bar .other-algo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .nav-title {
+            color: white;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📍 插入排序法</h1>
+            <p>互動動畫教學 - 快速理解排序演演算法</p>
+        </header>
+
+        <div class="nav-bar">
+            <div>
+                <a href="index.html" class="home-link">🏠 返回首頁</a>
+            </div>
+            <span class="nav-title">或選擇其他演算法 →</span>
+            <a href="氣泡排序動畫教學.html">🫧 氣泡排序</a>
+            <a href="選擇排序動畫教學.html">✓ 選擇排序</a>
+        </div>
+
+        <div class="content">
+            <!-- 簡介部分 -->
+            <div class="section">
+                <h2>📚 介紹</h2>
+                <p style="font-size: 1.1em; line-height: 1.8; color: #555;">
+                    插入排序法是一種直觀且高效的排序演演算法，類似於整理撲克牌的方式。
+                    它逐個取出未排序的元素，將其插入到已排序部分的正確位置。
+                    插入排序是穩定的，且對於小規模數據或接近排序的數據效率很高。
+                </p>
+            </div>
+
+            <!-- 互動演示部分 -->
+            <div class="section">
+                <h2>🎬 互動演示</h2>
+
+                <div class="visualization-area">
+                    <div class="step-description">
+                        當前狀態：<strong id="currentStep">準備就緒</strong>
+                    </div>
+
+                    <div class="bars-container" id="barsContainer"></div>
+
+                    <div class="controls">
+                        <button class="btn-primary" id="generateBtn" onclick="generateArray()">生成新列表</button>
+                        <button class="btn-primary" id="startBtn" onclick="startSort()">開始排序</button>
+                        <button class="btn-secondary" id="resetBtn" onclick="resetSort()" disabled>重置</button>
+                        <button class="btn-secondary" id="pauseBtn" onclick="togglePause()" disabled>暫停</button>
+                    </div>
+
+                    <div class="controls-group">
+                        <label for="sizeSlider">列表大小:</label>
+                        <input type="range" id="sizeSlider" min="5" max="50" value="15" 
+                               oninput="updateSize(this.value)" onchange="generateArray()">
+                        <span id="sizeValue">15</span>
+                    </div>
+
+                    <div class="controls-group">
+                        <label for="speedSlider">排序速度:</label>
+                        <input type="range" id="speedSlider" min="10" max="1000" value="500" 
+                               oninput="updateSpeed(this.value)">
+                        <span id="speedValue">中速</span>
+                    </div>
+
+                    <div class="stats" style="margin-top: 30px;">
+                        <div class="stat-box">
+                            <h4>比較次數</h4>
+                            <div class="stat-value" id="comparisons">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>移動次數</h4>
+                            <div class="stat-value" id="shifts">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>已排序</h4>
+                            <div class="stat-value" id="sorted">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>排序進度</h4>
+                            <div class="stat-value" id="progress">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 基本原理 -->
+            <div class="section">
+                <h2>🔍 基本原理</h2>
+
+                <div class="explanation">
+                    <h4>✨ 核心思想</h4>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>將列表分為已排序和未排序兩部分</li>
+                        <li>從未排序部分取出第一個元素</li>
+                        <li>在已排序部分中找到正確位置</li>
+                        <li>將元素插入該位置，其他元素右移</li>
+                        <li>重複上述過程，直到所有元素都被插入</li>
+                    </ol>
+                </div>
+
+                <h3>視覺化示例</h3>
+                <div class="code-block">
+<code>初始列表：[5, 3, 8, 4, 2]
+
+已排序部分：[5]，未排序部分：[3, 8, 4, 2]
+
+第一次插入：
+取出 3：[5] 中的 5 > 3，3 插入到 5 前面
+結果：[3, 5] | [8, 4, 2]
+
+第二次插入：
+取出 8：[3, 5] 都 < 8，8 插入到末尾
+結果：[3, 5, 8] | [4, 2]
+
+第三次插入：
+取出 4：5 > 4 但 3 < 4，4 插入到 3 和 5 之間
+結果：[3, 4, 5, 8] | [2]
+
+第四次插入：
+取出 2：所有元素都 > 2，2 插入到最前面
+結果：[2, 3, 4, 5, 8] ✓
+
+最終排序結果：[2, 3, 4, 5, 8]</code>
+                </div>
+            </div>
+
+            <!-- 演演算法詳解 -->
+            <div class="section">
+                <h2>📖 演演算法詳解</h2>
+
+                <h3>偽代碼</h3>
+                <div class="code-block">
+<code>procedure insertionSort(A : list)
+    for i := 1 to length(A) - 1 do
+        key := A[i]
+        j := i - 1
+        while j >= 0 and A[j] > key do
+            A[j + 1] := A[j]
+            j := j - 1
+        end while
+        A[j + 1] := key
+    end for
+end procedure</code>
+                </div>
+
+                <h3>逐步執行</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <div class="algorithm-step">
+                        <strong>1. 初始化：</strong> 從第二個元素開始（i=1）
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>2. 取出元素：</strong> 將 A[i] 保存為 key（待插入元素）
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>3. 設定指針：</strong> j 指向已排序部分的最後一個元素 (j = i-1)
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>4. 比較移動：</strong> 比較 A[j] 和 key，如果 A[j] > key，將 A[j] 右移到 A[j+1]
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>5. 向左掃描：</strong> j 向左移動，繼續比較和移動
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>6. 插入元素：</strong> 找到位置後，插入 key 到 A[j+1]
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>7. 重複：</strong> 回到第 2 步，處理下一個元素
+                    </div>
+                    <div class="algorithm-step">
+                        <strong>8. 終止：</strong> 所有元素都被插入時，排序完成
+                    </div>
+                </div>
+            </div>
+
+            <!-- 複雜度分析 -->
+            <div class="section">
+                <h2>📊 複雜度分析</h2>
+
+                <h3>時間複雜度</h3>
+                <table class="complexity-table">
+                    <tr>
+                        <th>情況</th>
+                        <th>複雜度</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><strong>最好情況</strong></td>
+                        <td><strong>O(n)</strong></td>
+                        <td>列表已排序，每個元素只需比較一次</td>
+                    </tr>
+                    <tr>
+                        <td><strong>平均情況</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>列表隨機排列</td>
+                    </tr>
+                    <tr>
+                        <td><strong>最壞情況</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>列表逆序排列，每個元素都需要移到最前面</td>
+                    </tr>
+                </table>
+
+                <h3>空間複雜度</h3>
+                <table class="complexity-table">
+                    <tr>
+                        <th>指標</th>
+                        <th>複雜度</th>
+                        <th>說明</th>
+                    </tr>
+                    <tr>
+                        <td><strong>空間複雜度</strong></td>
+                        <td><strong>O(1)</strong></td>
+                        <td>只使用常數個變數，原地排序</td>
+                    </tr>
+                </table>
+
+                <h3>比較次數</h3>
+                <p style="margin-top: 15px;">
+                    對於長度為 n 的列表，平均比較次數為：
+                </p>
+                <div class="code-block">
+<code>最好情況：n-1 次比較
+平均情況：n(n-1)/4 次比較
+最壞情況：(n-1) + (n-2) + ... + 1 = n(n-1)/2 ≈ O(n²) 次比較</code>
+                </div>
+            </div>
+
+            <!-- 代碼實現 -->
+            <div class="section">
+                <h2>💻 代碼實現</h2>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab(event, 'python')">Python</button>
+                        <button class="tab" onclick="switchTab(event, 'javascript')">JavaScript</button>
+                        <button class="tab" onclick="switchTab(event, 'java')">Java</button>
+                    </div>
+
+                    <div id="python" class="tab-content active">
+                        <h3>基礎版本</h3>
+                        <div class="code-block">
+<code>def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
+</code>
+                        </div>
+
+                        <h3>二分插入排序（優化版本）</h3>
+                        <div class="code-block">
+<code>def binary_insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        # 二分查找正確位置
+        left, right = 0, i - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if arr[mid] > key:
+                right = mid - 1
+            else:
+                left = mid + 1
+        # 移動元素
+        for j in range(i - 1, left - 1, -1):
+            arr[j + 1] = arr[j]
+        arr[left] = key
+    return arr
+</code>
+                        </div>
+                    </div>
+
+                    <div id="javascript" class="tab-content">
+                        <h3>基礎版本</h3>
+                        <div class="code-block">
+<code>function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+    return arr;
+}
+</code>
+                        </div>
+
+                        <h3>二分插入排序（優化版本）</h3>
+                        <div class="code-block">
+<code>function binaryInsertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i];
+        let left = 0, right = i - 1;
+        // 二分查找正確位置
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
+            if (arr[mid] > key) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        // 移動元素
+        for (let j = i - 1; j >= left; j--) {
+            arr[j + 1] = arr[j];
+        }
+        arr[left] = key;
+    }
+    return arr;
+}
+</code>
+                        </div>
+                    </div>
+
+                    <div id="java" class="tab-content">
+                        <h3>基礎版本</h3>
+                        <div class="code-block">
+<code>public class InsertionSort {
+    public static void insertionSort(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+}
+</code>
+                        </div>
+
+                        <h3>二分插入排序（優化版本）</h3>
+                        <div class="code-block">
+<code>public static void binaryInsertionSort(int[] arr) {
+    for (int i = 1; i < arr.length; i++) {
+        int key = arr[i];
+        int left = 0, right = i - 1;
+        // 二分查找正確位置
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (arr[mid] > key) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        // 移動元素
+        for (int j = i - 1; j >= left; j--) {
+            arr[j + 1] = arr[j];
+        }
+        arr[left] = key;
+    }
+}
+</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 優缺點 -->
+            <div class="section">
+                <h2>⚖️ 優缺點</h2>
+
+                <h3>✅ 優點</h3>
+                <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>易於理解和實現：</strong> 算法直觀，類似於實際排序撲克牌</li>
+                        <li><strong>適應性好：</strong> 對於接近排序的數據特別高效</li>
+                        <li><strong>內存高效：</strong> 原地排序，空間複雜度為 O(1)</li>
+                        <li><strong>穩定排序：</strong> 保持相等元素的相對順序</li>
+                        <li><strong>在線排序：</strong> 可以邊接收數據邊排序</li>
+                        <li><strong>小規模數據高效：</strong> 對於小型數組比快速排序更快</li>
+                    </ul>
+                </div>
+
+                <h3>❌ 缺點</h3>
+                <div style="background: #f8d7da; padding: 20px; border-radius: 8px;">
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>大規模數據低效：</strong> 時間複雜度為 O(n²)</li>
+                        <li><strong>較多移動操作：</strong> 需要不斷移動元素</li>
+                        <li><strong>效率不如分治算法：</strong> 快速排序、合併排序等更優</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 與其他演演算法的比較 -->
+            <div class="section">
+                <h2>📈 與其他演演算法比較</h2>
+
+                <table class="complexity-table">
+                    <tr>
+                        <th>演演算法</th>
+                        <th>最好情況</th>
+                        <th>平均情況</th>
+                        <th>最壞情況</th>
+                        <th>空間</th>
+                        <th>穩定性</th>
+                    </tr>
+                    <tr>
+                        <td><strong>插入排序</strong></td>
+                        <td><strong>O(n)</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td><strong>O(n²)</strong></td>
+                        <td>O(1)</td>
+                        <td>✅ 穩定</td>
+                    </tr>
+                    <tr>
+                        <td>氣泡排序</td>
+                        <td>O(n)</td>
+                        <td>O(n²)</td>
+                        <td>O(n²)</td>
+                        <td>O(1)</td>
+                        <td>✅ 穩定</td>
+                    </tr>
+                    <tr>
+                        <td>選擇排序</td>
+                        <td>O(n²)</td>
+                        <td>O(n²)</td>
+                        <td>O(n²)</td>
+                        <td>O(1)</td>
+                        <td>❌ 不穩定</td>
+                    </tr>
+                    <tr>
+                        <td>快速排序</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n²)</td>
+                        <td>O(log n)</td>
+                        <td>❌ 不穩定</td>
+                    </tr>
+                    <tr>
+                        <td>歸併排序</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n log n)</td>
+                        <td>O(n)</td>
+                        <td>✅ 穩定</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 實踐示例 -->
+            <div class="section">
+                <h2>📝 實踐示例</h2>
+
+                <h3>例子 1：排序學生成績</h3>
+                <div class="code-block">
+<code>students = [
+    {'name': '張三', 'score': 85},
+    {'name': '李四', 'score': 92},
+    {'name': '王五', 'score': 78}
+]
+
+def sort_students_by_score(students):
+    for i in range(1, len(students)):
+        key = students[i]
+        j = i - 1
+        while j >= 0 and students[j]['score'] > key['score']:
+            students[j + 1] = students[j]
+            j -= 1
+        students[j + 1] = key
+    return students
+
+sorted_students = sort_students_by_score(students)
+for student in sorted_students:
+    print(f"{student['name']}: {student['score']}")
+</code>
+                </div>
+
+                <h3>例子 2：實時排序數據流</h3>
+                <div class="code-block">
+<code># 插入排序特別適合在線處理（邊接收邊排序）
+def online_sort_stream(data_stream):
+    sorted_data = []
+    for value in data_stream:
+        # 使用二分查找找到插入位置
+        left, right = 0, len(sorted_data)
+        while left < right:
+            mid = (left + right) // 2
+            if sorted_data[mid] < value:
+                left = mid + 1
+            else:
+                right = mid
+        sorted_data.insert(left, value)
+    return sorted_data
+
+# 處理實時數據流
+stream = [42, 28, 65, 15, 78, 35]
+result = online_sort_stream(stream)
+print(result)  # [15, 28, 35, 42, 65, 78]
+</code>
+                </div>
+            </div>
+
+            <!-- 學習檢查清單 -->
+            <div class="section">
+                <h2>✓ 學習檢查清單</h2>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>☐ 理解插入排序的基本原理</li>
+                        <li>☐ 能夠手工執行小列表的插入排序</li>
+                        <li>☐ 理解時間和空間複雜度</li>
+                        <li>☐ 能用至少一種語言實現基礎版本</li>
+                        <li>☐ 理解為什麼插入排序對小數据/接近排序的數据高效</li>
+                        <li>☐ 理解二分插入排序的優化</li>
+                        <li>☐ 識別插入排序何時適用</li>
+                        <li>☐ 比較插入排序與其他排序演演算法</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🎓 插入排序法互動教學 | 最後更新：2026年3月23日</p>
+        </footer>
+    </div>
+
+    <script>
+        // 全局變數
+        let array = [];
+        let isSorting = false;
+        let isPaused = false;
+        let arraySize = 15;
+        let speed = 500;
+        let comparisons = 0;
+        let shifts = 0;
+
+        // 初始化
+        function init() {
+            generateArray();
+        }
+
+        // 生成隨機列表
+        function generateArray() {
+            array = [];
+            for (let i = 0; i < arraySize; i++) {
+                array.push(Math.floor(Math.random() * (400 - 20)) + 20);
+            }
+            drawBars();
+            resetStats();
+        }
+
+        // 繪製柱狀圖
+        function drawBars(comparingIndex = -1, insertingIndex = -1, sortedIndex = -1) {
+            const container = document.getElementById('barsContainer');
+            container.innerHTML = '';
+
+            const maxValue = Math.max(...array);
+            
+            array.forEach((value, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+
+                if (index <= sortedIndex) {
+                    bar.classList.add('sorted');
+                } else if (index === insertingIndex) {
+                    bar.classList.add('inserting');
+                } else if (index === comparingIndex) {
+                    bar.classList.add('comparing');
+                } else {
+                    bar.classList.add('default');
+                }
+
+                bar.style.height = (value / maxValue) * 350 + 'px';
+                bar.textContent = value;
+                container.appendChild(bar);
+            });
+        }
+
+        // 插入排序函數
+        async function insertionSort() {
+            const n = array.length;
+            let totalComparisons = 0;
+            let totalShifts = 0;
+
+            for (let i = 1; i < n; i++) {
+                if (isPaused) {
+                    await new Promise(resolve => {
+                        const checkPause = setInterval(() => {
+                            if (!isPaused) {
+                                clearInterval(checkPause);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                }
+
+                const key = array[i];
+                document.getElementById('currentStep').textContent = 
+                    `第 ${i} 輪：準備插入第 ${i + 1} 個元素 (值: ${key})`;
+
+                drawBars(i, i, i - 2);
+                await sleep(1100 - speed);
+
+                let j = i - 1;
+                
+                // 比較並移動元素
+                while (j >= 0 && array[j] > key) {
+                    if (isPaused) {
+                        await new Promise(resolve => {
+                            const checkPause = setInterval(() => {
+                                if (!isPaused) {
+                                    clearInterval(checkPause);
+                                    resolve();
+                                }
+                            }, 100);
+                        });
+                    }
+
+                    totalComparisons++;
+                    document.getElementById('comparisons').textContent = totalComparisons;
+
+                    drawBars(j, i, i - 2);
+                    document.getElementById('currentStep').textContent = 
+                        `第 ${i} 輪：比較位置 ${j + 1}（值: ${array[j]}）與待插入元素（值: ${key}）`;
+
+                    await sleep(1100 - speed);
+
+                    array[j + 1] = array[j];
+                    totalShifts++;
+                    document.getElementById('shifts').textContent = totalShifts;
+                    
+                    document.getElementById('currentStep').textContent = 
+                        `第 ${i} 輪：移動位置 ${j + 1} 的元素到右邊`;
+
+                    j--;
+
+                    await sleep(1100 - speed);
+                }
+
+                if (j + 1 !== i) {
+                    totalComparisons++;
+                    document.getElementById('comparisons').textContent = totalComparisons;
+                }
+
+                array[j + 1] = key;
+                document.getElementById('currentStep').textContent = 
+                    `第 ${i} 輪：完成，已排序部分長度為 ${i + 1}`;
+
+                const progress = Math.round((i / (n - 1)) * 100);
+                document.getElementById('progress').textContent = progress + '%';
+                document.getElementById('sorted').textContent = i;
+
+                drawBars(-1, -1, i);
+                await sleep(1100 - speed);
+            }
+
+            // 完成排序
+            document.getElementById('sorted').textContent = n - 1;
+            document.getElementById('progress').textContent = '100%';
+            drawBars(-1, -1, n - 1);
+            document.getElementById('currentStep').textContent = '✅ 排序完成！';
+        }
+
+        // 延遲函數
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // 開始排序
+        async function startSort() {
+            if (isSorting) return;
+            
+            isSorting = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('sizeSlider').disabled = true;
+            document.getElementById('resetBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('pauseBtn').textContent = '暫停';
+            isPaused = false;
+
+            await insertionSort();
+
+            isSorting = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('sizeSlider').disabled = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = true;
+        }
+
+        // 重置排序
+        function resetSort() {
+            if (isSorting) {
+                isSorting = false;
+                isPaused = false;
+            }
+            generateArray();
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('sizeSlider').disabled = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('currentStep').textContent = '準備就緒';
+        }
+
+        // 切換暫停
+        function togglePause() {
+            if (!isSorting) return;
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? '繼續' : '暫停';
+        }
+
+        // 更新大小
+        function updateSize(value) {
+            arraySize = parseInt(value);
+            document.getElementById('sizeValue').textContent = value;
+        }
+
+        // 更新速度
+        function updateSpeed(value) {
+            speed = parseInt(value);
+            const speedText = value < 300 ? '快速' : value < 700 ? '中速' : '慢速';
+            document.getElementById('speedValue').textContent = speedText;
+        }
+
+        // 重置統計數據
+        function resetStats() {
+            comparisons = 0;
+            shifts = 0;
+            document.getElementById('comparisons').textContent = '0';
+            document.getElementById('shifts').textContent = '0';
+            document.getElementById('sorted').textContent = '0';
+            document.getElementById('progress').textContent = '0%';
+        }
+
+        // 切換標籤頁
+        function switchTab(event, tabName) {
+            // 隱藏所有標籤內容
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 移除所有標籤的 active 類
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 顯示點擊的標籤內容
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // 頁面加載時初始化
+        window.onload = init;
+    </script>
+</body>
+</html>
