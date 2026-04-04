@@ -49,14 +49,8 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .cards-grid {
@@ -74,25 +68,19 @@
             transition: all 0.3s ease;
             animation: fadeInUp 0.8s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
         }
 
-        .card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card:hover {
@@ -107,20 +95,52 @@
             font-size: 3em;
         }
 
-        .card:nth-child(1) .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+        /* 卡片 1：氣泡排序 */
+        .card:nth-child(1) .card-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card:nth-child(1) .features h3 { color: #667eea; }
+        .card:nth-child(1) .complexity-info { background: #e7f5ff; border-left: 4px solid #667eea; }
+        .card:nth-child(1) .complexity-info strong { color: #667eea; }
+        .card:nth-child(1) .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+        .card:nth-child(1) .btn-primary:hover { box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
 
-        .card:nth-child(2) .card-header {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
+        /* 卡片 2：選擇排序 */
+        .card:nth-child(2) .card-header { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .card:nth-child(2) .features h3 { color: #f5576c; }
+        .card:nth-child(2) .complexity-info { background: #ffe3e3; border-left: 4px solid #f5576c; }
+        .card:nth-child(2) .complexity-info strong { color: #f5576c; }
+        .card:nth-child(2) .btn-primary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3); }
+        .card:nth-child(2) .btn-primary:hover { box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4); }
 
-        .card:nth-child(3) .card-header {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
+        /* 卡片 3：插入排序 */
+        .card:nth-child(3) .card-header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .card:nth-child(3) .features h3 { color: #10b981; }
+        .card:nth-child(3) .complexity-info { background: #d1fae5; border-left: 4px solid #10b981; }
+        .card:nth-child(3) .complexity-info strong { color: #10b981; }
+        .card:nth-child(3) .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .card:nth-child(3) .btn-primary:hover { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
+
+        /* 卡片 4：合併排序 */
+        .card:nth-child(4) .card-header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .card:nth-child(4) .features h3 { color: #00acc1; }
+        .card:nth-child(4) .complexity-info { background: #e0f7fa; border-left: 4px solid #00acc1; }
+        .card:nth-child(4) .complexity-info strong { color: #00acc1; }
+        .card:nth-child(4) .btn-primary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
+        .card:nth-child(4) .btn-primary:hover { box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4); }
+
+        /* 卡片 5：堆積排序 */
+        .card:nth-child(5) .card-header { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .card:nth-child(5) .features h3 { color: #0ca678; }
+        .card:nth-child(5) .complexity-info { background: #e6fcf5; border-left: 4px solid #20c997; }
+        .card:nth-child(5) .complexity-info strong { color: #20c997; }
+        .card:nth-child(5) .btn-primary { background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); box-shadow: 0 4px 15px rgba(32, 201, 151, 0.3); }
+        .card:nth-child(5) .btn-primary:hover { box-shadow: 0 6px 20px rgba(32, 201, 151, 0.4); }
+
 
         .card-content {
             padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         .card h2 {
@@ -134,6 +154,7 @@
             color: #666;
             line-height: 1.8;
             margin-bottom: 20px;
+            flex-grow: 1;
         }
 
         .features {
@@ -144,7 +165,6 @@
         }
 
         .features h3 {
-            color: #667eea;
             margin-bottom: 15px;
             font-size: 1.1em;
         }
@@ -170,48 +190,16 @@
             font-size: 1.2em;
         }
 
-        .card:nth-child(2) .features h3 {
-            color: #f5576c;
-        }
-
-        .card:nth-child(3) .features h3 {
-            color: #10b981;
-        }
-
         .complexity-info {
-            background: #e7f5ff;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #667eea;
-        }
-
-        .card:nth-child(2) .complexity-info {
-          ard:nth-child(3) .complexity-info {
-            background: #d1fae5;
-            border-left-color: #10b981;
-        }
-
-        .complexity-info strong {
-            color: #667eea;
-        }
-
-        .card:nth-child(2) .complexity-info strong {
-            color: #f5576c;
-        }
-
-        .card:nth-child(3) .complexity-info strong {
-            color: #10b981;
-        }
-
-        .card:nth-child(2) .complexity-info strong {
-            color: #f5576c;
         }
 
         .btn-container {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: auto;
         }
 
         .btn {
@@ -228,45 +216,10 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
-
-        .card:nth-child(3) .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .card:nth-child(3) .btn-primary:hover {
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .card:nth-child(2) .btn-primary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
-        }
-
-        .card:nth-child(2) .btn-primary:hover {
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
-        }
-
-        .btn-secondary {
-            background: #e9ecef;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .btn-secondary:hover {
-            background: #dee2e6;
+        .btn:hover {
             transform: translateY(-2px);
         }
 
@@ -308,6 +261,7 @@
         .comparison-table table {
             width: 100%;
             border-collapse: collapse;
+            white-space: nowrap;
         }
 
         .comparison-table th,
@@ -328,27 +282,10 @@
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.2em;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .card-header {
-                font-size: 2em;
-                padding: 30px 20px;
-            }
-
-            .card-content {
-                padding: 30px 20px;
-            }
-
-            .btn-container {
-                flex-direction: column;
-            }
+            .header h1 { font-size: 2.2em; }
+            .cards-grid { grid-template-columns: 1fr; gap: 30px; }
+            .card-header { font-size: 2em; padding: 30px 20px; }
+            .card-content { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -363,6 +300,7 @@
 
         <!-- 卡片網格 -->
         <div class="cards-grid">
+            
             <!-- 氣泡排序卡片 -->
             <div class="card">
                 <div class="card-header">🫧</div>
@@ -376,26 +314,23 @@
                             <li>簡單直觀，易於理解</li>
                             <li>原地排序，空間複雜度 O(1)</li>
                             <li>穩定排序演算法</li>
-                            <li>適合初學者學習</li>
                         </ul>
                     </div>
 
                     <div class="complexity-info">
                         <strong>時間複雜度：</strong><br>
-                        最好情況: O(n) | 平均: O(n²) | 最壞: O(n²)
+                        最好: O(n) | 平均: O(n²) | 最壞: O(n²)
                     </div>
 
                     <div class="btn-container">
-                        <a href="氣泡排序動畫教學.html" class="btn btn-primary">
-                            開始學習 →
-                        </a>
+                        <a href="氣泡排序動畫教學.html" class="btn btn-primary">開始學習 →</a>
                     </div>
                 </div>
             </div>
 
             <!-- 選擇排序卡片 -->
             <div class="card">
-                <div class="card-header">✓</div>
+                <div class="card-header">🎯</div>
                 <div class="card-content">
                     <h2>選擇排序法</h2>
                     <p>每次都從未排序的部分找出最小元素，將其移動到已排序部分的末尾。</p>
@@ -405,20 +340,17 @@
                         <ul>
                             <li>邏輯清晰，易於實現</li>
                             <li>原地排序，空間複雜度 O(1)</li>
-                            <li>不穩定排序</li>
-                            <li>交換次數較少</li>
+                            <li>不穩定排序，交換次數較少</li>
                         </ul>
                     </div>
 
                     <div class="complexity-info">
                         <strong>時間複雜度：</strong><br>
-                        最好情況: O(n²) | 平均: O(n²) | 最壞: O(n²)
+                        最好: O(n²) | 平均: O(n²) | 最壞: O(n²)
                     </div>
 
                     <div class="btn-container">
-                        <a href="選擇排序動畫教學.html" class="btn btn-primary">
-                            開始學習 →
-                        </a>
+                        <a href="選擇排序動畫教學.html" class="btn btn-primary">開始學習 →</a>
                     </div>
                 </div>
             </div>
@@ -434,29 +366,81 @@
                         <h3>特徵</h3>
                         <ul>
                             <li>直觀高效，類似現實場景</li>
-                            <li>原地排序，空間複雜度 O(1)</li>
-                            <li>穩定排序演算法</li>
+                            <li>原地排序，穩定排序演算法</li>
                             <li>對接近排序的數據特別高效</li>
                         </ul>
                     </div>
 
                     <div class="complexity-info">
                         <strong>時間複雜度：</strong><br>
-                        最好情況: O(n) | 平均: O(n²) | 最壞: O(n²)
+                        最好: O(n) | 平均: O(n²) | 最壞: O(n²)
                     </div>
 
                     <div class="btn-container">
-                        <a href="插入排序動畫教學.html" class="btn btn-primary">
-                            開始學習 →
-                        </a>
+                        <a href="插入排序動畫教學.html" class="btn btn-primary">開始學習 →</a>
                     </div>
                 </div>
             </div>
+
+            <!-- 合併排序卡片 -->
+            <div class="card">
+                <div class="card-header">🔀</div>
+                <div class="card-content">
+                    <h2>合併排序法</h2>
+                    <p>採用「分而治之」策略，不斷對半分割陣列再進行合併，是極其穩定的高效演算法。</p>
+                    
+                    <div class="features">
+                        <h3>特徵</h3>
+                        <ul>
+                            <li>效能穩定保證 O(n log n)</li>
+                            <li>穩定排序，適合處理大數據</li>
+                            <li>需額外空間，非原地排序</li>
+                        </ul>
+                    </div>
+
+                    <div class="complexity-info">
+                        <strong>時間複雜度：</strong><br>
+                        最好: O(n log n) | 平均: O(n log n) | 最壞: O(n log n)
+                    </div>
+
+                    <div class="btn-container">
+                        <a href="merge_sort.html" class="btn btn-primary">開始學習 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 堆積排序卡片 -->
+            <div class="card">
+                <div class="card-header">🌲</div>
+                <div class="card-content">
+                    <h2>堆積排序法</h2>
+                    <p>利用「二元堆積樹」結構，透過建立最大堆積並不斷提取最大值來達成排序。</p>
+                    
+                    <div class="features">
+                        <h3>特徵</h3>
+                        <ul>
+                            <li>空間省，原地排序 O(1)</li>
+                            <li>效能穩定保證 O(n log n)</li>
+                            <li>不穩定排序</li>
+                        </ul>
+                    </div>
+
+                    <div class="complexity-info">
+                        <strong>時間複雜度：</strong><br>
+                        最好: O(n log n) | 平均: O(n log n) | 最壞: O(n log n)
+                    </div>
+
+                    <div class="btn-container">
+                        <a href="heap_sort.html" class="btn btn-primary">開始學習 →</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- 對比表格 -->
         <div class="comparison-table">
-            <h3>🔍 演算法對比</h3>
+            <h3>🔍 演算法完整對比</h3>
             <table>
                 <thead>
                     <tr>
@@ -464,19 +448,25 @@
                         <th>氣泡排序</th>
                         <th>選擇排序</th>
                         <th>插入排序</th>
+                        <th>合併排序 (🆕)</th>
+                        <th>堆積排序 (🆕)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>時間複雜度</strong></td>
+                        <td><strong>時間複雜度 (平均)</strong></td>
                         <td>O(n²)</td>
                         <td>O(n²)</td>
                         <td>O(n²)</td>
+                        <td><strong>O(n log n)</strong></td>
+                        <td><strong>O(n log n)</strong></td>
                     </tr>
                     <tr>
                         <td><strong>空間複雜度</strong></td>
                         <td>O(1)</td>
                         <td>O(1)</td>
+                        <td>O(1)</td>
+                        <td><strong>O(n)</strong></td>
                         <td>O(1)</td>
                     </tr>
                     <tr>
@@ -484,24 +474,24 @@
                         <td>✓ 穩定</td>
                         <td>✗ 不穩定</td>
                         <td>✓ 穩定</td>
+                        <td>✓ 穩定</td>
+                        <td>✗ 不穩定</td>
                     </tr>
                     <tr>
-                        <td><strong>比較次數</strong></td>
-                        <td>n(n-1)/2</td>
-                        <td>n(n-1)/2</td>
-                        <td>平均 n(n-1)/4</td>
-                    </tr>
-                    <tr>
-                        <td><strong>交換次數</strong></td>
-                        <td>最多 n(n-1)/2</td>
-                        <td>最多 n-1</td>
-                        <td>平均 n(n-1)/4</td>
+                        <td><strong>排序策略</strong></td>
+                        <td>交換</td>
+                        <td>選擇</td>
+                        <td>插入</td>
+                        <td>分而治之</td>
+                        <td>二元樹/選擇</td>
                     </tr>
                     <tr>
                         <td><strong>最適用場景</strong></td>
-                        <td>已排序或接近排序的數據</td>
-                        <td>交換成本較高的場景</td>
-                        <td>接近排序或小規模數據</td>
+                        <td>教學、已接近排序數據</td>
+                        <td>交換成本極高的場景</td>
+                        <td>小規模、接近排序數據</td>
+                        <td><strong>大規模數據、要求穩定性</strong></td>
+                        <td><strong>記憶體受限的大規模數據</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -509,12 +499,11 @@
 
         <!-- 統計信息區 -->
         <div class="footer-section">
-            <h3>📚 學習建議</h3>
+            <h3>📚 學習路徑建議</h3>
             <p>
-                建議您先從 <strong>氣泡排序</strong> 開始，理解最基本的排序邏輯。<br>
-                然後學習 <strong>選擇排序</strong>，比較不同的排序策略。<br>
-                接著學習 <strong>插入排序</strong>，體驗更高效的排序方式。<br>
-                通過互動動畫，您將能夠深入理解這些經典演算法的運作原理！
+                建議您先從 <strong>氣泡、選擇、插入排序</strong> 開始，理解時間複雜度 O(n²) 的基礎邏輯。<br>
+                熟悉基礎後，再進階挑戰 <strong>合併排序</strong> 與 <strong>堆積排序</strong>，<br>
+                體會前人如何透過「分治」與「資料結構」將效能巨幅提升至 O(n log n)！
             </p>
         </div>
     </div>

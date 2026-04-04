@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>堆積排序法 - 互動動畫教學</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); min-height: 100vh; padding: 20px; color: #333; }
+.container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden; }
+header { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: #0b7245; padding: 30px 20px; text-align: center; text-shadow: 0 1px 2px rgba(255,255,255,0.5); }
+header h1 { font-size: 2.5em; margin-bottom: 10px; }
+.nav-bar { background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+.nav-bar a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; background: rgba(255,255,255,0.2); transition: 0.3s; }
+.nav-bar a:hover { background: rgba(255,255,255,0.4); }
+.content { padding: 30px; }
+.section h2 { color: #0ca678; border-bottom: 3px solid #38f9d7; padding-bottom: 10px; margin-bottom: 20px; }
+.visualization-area { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 2px solid #e9ecef; margin-bottom: 30px; }
+.bars-container { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 350px; padding: 20px; background: white; border-radius: 8px; margin-bottom: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+.bar { width: 35px; background: linear-gradient(180deg, #43e97b 0%, #38f9d7 100%); border-radius: 5px 5px 0 0; transition: all 0.2s ease; display: flex; align-items: flex-end; justify-content: center; color: #0b7245; font-size: 12px; font-weight: bold; padding-bottom: 5px; }
+.bar.comparing { background: linear-gradient(180deg, #ff6b6b 0%, #ee5a6f 100%); transform: scale(1.1); color: white; }
+.bar.heapifying { background: linear-gradient(180deg, #ffa94d 0%, #fd7e14 100%); transform: scale(1.05); color: white; }
+.bar.sorted { background: linear-gradient(180deg, #2b8a3e 0%, #2f9e44 100%); color: white; }
+.controls { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+button { padding: 10px 20px; font-size: 1em; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.btn-primary { background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); color: white; }
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-primary:disabled, .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary { background: #e9ecef; color: #333; }
+.controls-group input { cursor: pointer; }
+.stats { display: flex; justify-content: space-between; gap: 15px; margin-top: 20px; }
+.stat-box { flex: 1; background: white; border: 2px solid #e9ecef; padding: 15px; border-radius: 8px; text-align: center; }
+.stat-box h4 { color: #0ca678; font-size: 0.9em; margin-bottom: 5px; }
+.stat-value { font-size: 1.8em; font-weight: bold; color: #20c997; }
+.code-block { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; font-family: monospace; line-height: 1.5; margin-bottom: 20px; }
+.step-description { font-size: 1.1em; color: #555; padding: 15px; background: #e6fcf5; border-radius: 5px; border-left: 4px solid #20c997; margin-bottom: 15px; font-weight: bold; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+th { background: #f8f9fa; color: #0ca678; }
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🌲 堆積排序法 (Heap Sort)</h1>
+        <p>互動動畫教學 - 基於二元樹資料結構的高效排序演算法</p>
+    </header>
+    <div class="nav-bar">
+        <a href="index.html">🏠 返回首頁</a>
+        <a href="合併排序動畫教學.html" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">🔀 改看合併排序</a>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <h2>📚 介紹與原理</h2>
+            <p style="line-height: 1.8; margin-bottom: 15px;">
+                堆積排序法將陣列視為一棵「完全二元樹」。它會先將陣列調整成<strong>「最大堆積（Max-Heap）」</strong>（父節點恆大於子節點），
+                此時陣列的第一個元素就是最大值。接著將最大值與陣列最後一個元素交換，並縮小範圍，再次調整剩餘元素，重複直到排序完成。
+            </p>
+            <div class="code-block" style="background: #fff3cd; color: #856404; border-left: 4px solid #ffc107;">
+                <strong>核心步驟：</strong><br>
+                1. Build Max-Heap：從最後一個非葉節點開始，向上整理，建立最大堆積。<br>
+                2. Extract Max：將根節點（最大值）與目前未排序的最後一個節點交換。<br>
+                3. Heapify：縮小未排序範圍，將新的根節點向下沉降，恢復最大堆積結構。<br>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎬 互動演示</h2>
+            <div class="visualization-area">
+                <div class="step-description" id="currentStep">當前狀態：準備就緒</div>
+                <div class="bars-container" id="barsContainer"></div>
+                
+                <div class="controls">
+                    <button class="btn-primary" id="generateBtn" onclick="generateArray()">生成新列表</button>
+                    <button class="btn-primary" id="startBtn" onclick="startSort()">開始排序</button>
+                    <button class="btn-secondary" id="pauseBtn" onclick="togglePause()" disabled>暫停</button>
+                    <button class="btn-secondary" id="resetBtn" onclick="resetSort()" disabled>重置</button>
+                    
+                    <span style="margin-left: 10px; font-weight: bold;">數量:</span>
+                    <input type="range" id="sizeSlider" min="5" max="50" value="20" oninput="updateSize(this.value)" onchange="generateArray()">
+                    <span id="sizeValue" style="width: 25px;">20</span>
+                    
+                    <span style="margin-left: 10px; font-weight: bold;">速度:</span>
+                    <input type="range" id="speedSlider" min="10" max="1000" value="600" oninput="updateSpeed(this.value)">
+                </div>
+
+                <div class="stats">
+                    <div class="stat-box"><h4>比較次數</h4><div class="stat-value" id="comparisons">0</div></div>
+                    <div class="stat-box"><h4>交換次數</h4><div class="stat-value" id="swaps">0</div></div>
+                    <div class="stat-box"><h4>已排序</h4><div class="stat-value" id="sortedCount">0</div></div>
+                    <div class="stat-box"><h4>狀態</h4><div class="stat-value" id="progress">未開始</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💻 JavaScript 核心實作</h2>
+            <div class="code-block">
+<code>function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    // 尋找父、左子、右子中的最大值
+    if (left &lt; n &amp;&amp; arr[left] &gt; arr[largest]) largest = left;
+    if (right &lt; n &amp;&amp; arr[right] &gt; arr[largest]) largest = right;
+
+    // 若最大值不是原父節點，則交換並遞迴調整
+    if (largest !== i) {
+        let temp = arr[i]; arr[i] = arr[largest]; arr[largest] = temp;
+        heapify(arr, n, largest);
+    }
+}
+
+function heapSort(arr) {
+    let n = arr.length;
+    // 1. 建立最大堆積
+    for (let i = Math.floor(n / 2) - 1; i &gt;= 0; i--) heapify(arr, n, i);
+    // 2. 依序提取最大值到陣列尾端
+    for (let i = n - 1; i &gt; 0; i--) {
+        let temp = arr[0]; arr[0] = arr[i]; arr[i] = temp;
+        heapify(arr, i, 0);
+    }
+    return arr;
+}</code>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>⚖️ 複雜度分析</h2>
+            <table>
+                <tr><th>時間複雜度 (平均/最壞)</th><th>空間複雜度</th><th>穩定性</th></tr>
+                <tr><td><strong>O(n log n)</strong></td><td><strong>O(1) (原地排序)</strong></td><td>❌ 不穩定</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let array = [], isSorting = false, isPaused = false;
+    let arraySize = 20, speed = 600;
+    let comparisons = 0, swaps = 0, sortedCount = 0;
+    let currentSortedIndices = new Set();
+
+    function init() { generateArray(); }
+
+    function generateArray() {
+        array = []; currentSortedIndices.clear();
+        for (let i = 0; i < arraySize; i++) array.push(Math.floor(Math.random() * 330) + 20);
+        drawBars(); resetStats();
+    }
+
+    function drawBars(comp1 = -1, comp2 = -1, heapIdx = -1) {
+        const container = document.getElementById('barsContainer');
+        container.innerHTML = '';
+        const maxVal = Math.max(...array);
+        
+        array.forEach((val, idx) => {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            if (currentSortedIndices.has(idx)) bar.classList.add('sorted');
+            else if (idx === comp1 || idx === comp2) bar.classList.add('comparing');
+            else if (idx === heapIdx) bar.classList.add('heapifying');
+            else bar.classList.add('default');
+            
+            bar.style.height = (val / maxVal) * 310 + 'px';
+            bar.textContent = val;
+            container.appendChild(bar);
+        });
+    }
+
+    async function checkPause() {
+        while (isPaused) { await new Promise(r => setTimeout(r, 100)); }
+    }
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    async function heapify(n, i) {
+        let largest = i, left = 2 * i + 1, right = 2 * i + 2;
+        document.getElementById('currentStep').textContent = `檢查節點索引 ${i} 的堆積性質`;
+        drawBars(-1, -1, i); await sleep((1100 - speed) / 2);
+
+        if (left < n) {
+            await checkPause(); comparisons++;
+            document.getElementById('comparisons').textContent = comparisons;
+            document.getElementById('currentStep').textContent = `比較父節點 ${array[largest]} 與左子節點 ${array[left]}`;
+            drawBars(largest, left, i); await sleep(1100 - speed);
+            if (array[left] > array[largest]) largest = left;
+        }
+        if (right < n) {
+            await checkPause(); comparisons++;
+            document.getElementById('comparisons').textContent = comparisons;
+            document.getElementById('currentStep').textContent = `比較當前最大值 ${array[largest]} 與右子節點 ${array[right]}`;
+            drawBars(largest, right, i); await sleep(1100 - speed);
+            if (array[right] > array[largest]) largest = right;
+        }
+        if (largest !== i) {
+            await checkPause(); swaps++;
+            document.getElementById('swaps').textContent = swaps;
+            document.getElementById('currentStep').textContent = `交換: 將較大的 ${array[largest]} 向上提升`;
+            drawBars(i, largest, -1); await sleep(1100 - speed);
+            
+            let temp = array[i]; array[i] = array[largest]; array[largest] = temp;
+            drawBars(i, largest, -1); await sleep((1100 - speed) / 2);
+            await heapify(n, largest);
+        }
+    }
+
+    async function heapSortProcess() {
+        let n = array.length;
+        document.getElementById('progress').textContent = '階段一：建構最大堆積';
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            if (!isSorting) return;
+            await heapify(n, i);
+        }
+        document.getElementById('progress').textContent = '階段二：提取最大值';
+        for (let i = n - 1; i > 0; i--) {
+            if (!isSorting) return;
+            await checkPause();
+            document.getElementById('currentStep').textContent = `將當前最大值 ${array[0]} 移至陣列尾端 (索引 ${i})`;
+            drawBars(0, i, -1); await sleep(1100 - speed);
+
+            let temp = array[0]; array[0] = array[i]; array[i] = temp;
+            swaps++; document.getElementById('swaps').textContent = swaps;
+            currentSortedIndices.add(i);
+            sortedCount++; document.getElementById('sortedCount').textContent = sortedCount;
+            
+            drawBars(-1, -1, -1); await sleep((1100 - speed) / 2);
+            await heapify(i, 0);
+        }
+        currentSortedIndices.add(0);
+        sortedCount++; document.getElementById('sortedCount').textContent = sortedCount;
+    }
+
+    async function startSort() {
+        if (isSorting) return;
+        isSorting = true;
+        ['startBtn', 'generateBtn', 'sizeSlider'].forEach(id => document.getElementById(id).disabled = true);
+        ['resetBtn', 'pauseBtn'].forEach(id => document.getElementById(id).disabled = false);
+        document.getElementById('pauseBtn').textContent = '暫停';
+        isPaused = false;
+
+        await heapSortProcess();
+
+        if (isSorting) {
+            isSorting = false;
+            document.getElementById('progress').textContent = '✅ 已完成';
+            document.getElementById('currentStep').textContent = '🎉 排序完成！';
+            drawBars();
+            ['startBtn', 'generateBtn', 'sizeSlider'].forEach(id => document.getElementById(id).disabled = false);
+            ['resetBtn', 'pauseBtn'].forEach(id => document.getElementById(id).disabled = true);
+        }
+    }
+
+    function resetSort() {
+        isSorting = false; isPaused = false;
+        generateArray();
+        ['startBtn', 'generateBtn', 'sizeSlider'].forEach(id => document.getElementById(id).disabled = false);
+        ['resetBtn', 'pauseBtn'].forEach(id => document.getElementById(id).disabled = true);
+        document.getElementById('currentStep').textContent = '準備就緒';
+    }
+
+    function togglePause() {
+        if (!isSorting) return;
+        isPaused = !isPaused;
+        document.getElementById('pauseBtn').textContent = isPaused ? '繼續' : '暫停';
+        document.getElementById('progress').textContent = isPaused ? '⏸ 暫停中' : '進行中...';
+    }
+
+    function updateSize(val) {
+        arraySize = parseInt(val);
+        document.getElementById('sizeValue').textContent = val;
+    }
+    function updateSpeed(val) { speed = parseInt(val); }
+    function resetStats() {
+        comparisons = 0; swaps = 0; sortedCount = 0;
+        document.getElementById('comparisons').textContent = '0';
+        document.getElementById('swaps').textContent = '0';
+        document.getElementById('sortedCount').textContent = '0';
+        document.getElementById('progress').textContent = '未開始';
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
