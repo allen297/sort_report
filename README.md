@@ -6,7 +6,7 @@
 
 ## 氣泡排序法 (Bubble Sort)
 **簡述原理：**
-氣泡排序法會重複走訪要排序的數列，一次比較兩個相鄰的元素，如果順序錯誤就將他們交換。走訪數列的工作會重複進行，直到沒有再需要交換的元素為止。越大的元素會像氣泡一樣慢慢「浮」到數列的頂端（最後面）。
+氣泡排序法會重複走訪要排序的數列，一次比較兩個相鄰的元素，如果順序錯誤就將他們交換。走訪數列的工作會重複進行，直到沒有再需要交換的元素為止。越大的元素會像氣泡一樣慢慢浮到數列的頂端（最後面）。
 
 **複雜度分析：**
 * 時間複雜度：
@@ -29,6 +29,7 @@ void bubbleSort(int arr[], int n) {
     }
 }
 ```
+<img width="1162" height="386" alt="image" src="https://github.com/user-attachments/assets/9d0c1958-63ed-4640-ac38-df88af0c8b1c" />
 
 ---
 ## 選擇排序法 (Selection Sort)
@@ -53,6 +54,7 @@ void selectionSort(int arr[], int n) {
     }
 }
 ```
+<img width="573" height="371" alt="image" src="https://github.com/user-attachments/assets/4ee8ebe7-86b4-4552-a16b-9d72ca10a65e" />
 
 ---
 ## 插入排序法 (Insertion Sort)
@@ -80,11 +82,12 @@ void insertionSort(int arr[], int n) {
     }
 }
 ```
+<img width="534" height="361" alt="image" src="https://github.com/user-attachments/assets/b549416e-a220-43b1-9cc0-e57a46c8d056" />
 
 ---
 ## 合併排序法 (Merge Sort)
 **簡述原理：**
-採用「分而治之 (Divide and Conquer)」策略。將未排序數列從中間切半，遞迴地對這兩個子數列進行排序，最後將排好序的兩個子數列「合併」成一個單一的、已排序的數列。
+採用「分而治之」策略。將未排序數列從中間切半，遞迴地對這兩個子數列進行排序，最後將排好序的兩個子數列合併成一個單一的、已排序的數列。
 
 **複雜度分析：**
 * 時間複雜度：最佳、平均、最壞情況皆為 O(n log n)
@@ -116,6 +119,7 @@ void mergeSort(int arr[], int l, int r) {
     }
 }
 ```
+<img width="507" height="370" alt="image" src="https://github.com/user-attachments/assets/7d07630c-4bae-41c4-b828-3aee1218a37e" />
 
 ---
 ## 堆積排序法 (Heap Sort)
@@ -157,6 +161,7 @@ void heapSort(int arr[], int n) {
     }
 }
 ```
+<img width="567" height="373" alt="image" src="https://github.com/user-attachments/assets/12cf3f06-d0dd-47ed-8cf8-6abf5b284a89" />
 
 ---
 ## 綜合比較
